@@ -1,8 +1,8 @@
-﻿using NSE.WebApp.MVC.Models;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using NSE.WebApp.MVC.Models;
 
 namespace NSE.WebApp.MVC.Services
 {
@@ -41,6 +41,6 @@ namespace NSE.WebApp.MVC.Services
             };
 
             return JsonSerializer.Deserialize<UsuarioRespostaLogin>(await response.Content.ReadAsStringAsync(), options);
-        }
+        }        
     }
 }
