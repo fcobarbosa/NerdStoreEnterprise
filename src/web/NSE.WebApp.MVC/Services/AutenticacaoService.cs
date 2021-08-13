@@ -6,7 +6,7 @@ using NSE.WebApp.MVC.Models;
 
 namespace NSE.WebApp.MVC.Services
 {
-    public class AutenticacaoService : IAutenticacaoService
+    public class AutenticacaoService : Service, IAutenticacaoService
     {
         private readonly HttpClient _httpClient;
         public AutenticacaoService(HttpClient httpClient)
@@ -20,12 +20,14 @@ namespace NSE.WebApp.MVC.Services
                 Encoding.UTF8,
                 "application/json");
             var response = await this._httpClient.PostAsync("https://localhost:44394/api/identidade/autenticar", loginContent);
-            var options = new JsonSerializerOptions
+            if (!TrataErrosResponse(response))
             {
-                PropertyNameCaseInsensitive = true
-            };
-
-            return JsonSerializer.Deserialize<UsuarioRespostaLogin>(await response.Content.ReadAsStringAsync(), options);
+                return new UsuarioRespostaLogin
+                {
+                    ResponseResult = JsonSerializer.Deserialize<ResponseResult>(await response.Content.ReadAsStringAsync(), _jsonOptions)
+                };
+            }           
+            return JsonSerializer.Deserialize<UsuarioRespostaLogin>(await response.Content.ReadAsStringAsync(), _jsonOptions);
         }
 
         public async Task<UsuarioRespostaLogin> Registro(UsuarioRegistro usuarioRegistro)
@@ -35,12 +37,14 @@ namespace NSE.WebApp.MVC.Services
                 Encoding.UTF8,
                 "application/json");
             var response = await this._httpClient.PostAsync("https://localhost:44394/api/identidade/nova-conta", loginContent);
-            var options = new JsonSerializerOptions
+            if (!TrataErrosResponse(response))
             {
-                PropertyNameCaseInsensitive = true
-            };
-
-            return JsonSerializer.Deserialize<UsuarioRespostaLogin>(await response.Content.ReadAsStringAsync(), options);
+                return new UsuarioRespostaLogin
+                {
+                    ResponseResult = JsonSerializer.Deserialize<ResponseResult>(await response.Content.ReadAsStringAsync(), _jsonOptions)
+                };
+            }
+            return JsonSerializer.Deserialize<UsuarioRespostaLogin>(await response.Content.ReadAsStringAsync(), _jsonOptions);
         }        
     }
 }

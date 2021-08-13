@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace NSE.WebApp.MVC.Controllers
 {
-    public class IdentidadeController : Controller
+    public class IdentidadeController : MainController
     {
         private readonly IAutenticacaoService _autenticacaoService;
 
@@ -34,12 +34,12 @@ namespace NSE.WebApp.MVC.Controllers
             if (!ModelState.IsValid) return View(usuarioRegistro);
 
             //API - Registro
-            var response = await this._autenticacaoService.Registro(usuarioRegistro);
+            var resposta = await this._autenticacaoService.Registro(usuarioRegistro);
 
-            //if (false) return View(usuarioRegistro);
+            if (ResponsePossuiErros(resposta.ResponseResult)) return View(usuarioRegistro);
 
             //realizar login na APP
-            await RealizarLogin(response);
+            await RealizarLogin(resposta);
 
             return RedirectToAction("Index", "Home");
         }
@@ -58,20 +58,21 @@ namespace NSE.WebApp.MVC.Controllers
             if (!ModelState.IsValid) return View(usuarioLogin);
 
             //API - Login
-            var response = await this._autenticacaoService.Login(usuarioLogin);
+            var resposta = await this._autenticacaoService.Login(usuarioLogin);
 
-            //if (false) return View(usuarioLogin);
+            if (ResponsePossuiErros(resposta.ResponseResult)) return View(usuarioLogin);
 
             //realizar login na APP
-            await RealizarLogin(response);
+            await RealizarLogin(resposta);
 
             return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
         [Route("sair")]
-        public IActionResult Logout()
+        public async Task<IActionResult> LogoutAsync()
         {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
 
