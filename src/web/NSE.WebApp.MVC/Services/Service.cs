@@ -1,21 +1,32 @@
-﻿using NSE.WebApp.MVC.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using NSE.WebApp.MVC.Extensions;
 
 namespace NSE.WebApp.MVC.Services
 {
     public abstract class Service
     {
-        protected readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        protected StringContent ObterConteudo(object dado)
         {
-            PropertyNameCaseInsensitive = true
-        };
+            return new StringContent(
+                JsonSerializer.Serialize(dado),
+                Encoding.UTF8,
+                "application/json");
+        }
 
-        protected bool TrataErrosResponse(HttpResponseMessage response)
+        protected async Task<T> DeserializarObjetoResponse<T>(HttpResponseMessage responseMessage)
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            return JsonSerializer.Deserialize<T>(await responseMessage.Content.ReadAsStringAsync(), options);
+        }
+
+        protected bool TratarErrosResponse(HttpResponseMessage response)
         {
             switch ((int)response.StatusCode)
             {
@@ -24,9 +35,11 @@ namespace NSE.WebApp.MVC.Services
                 case 404:
                 case 500:
                     throw new CustomHttpRequestException(response.StatusCode);
+
                 case 400:
                     return false;
             }
+
             response.EnsureSuccessStatusCode();
             return true;
         }

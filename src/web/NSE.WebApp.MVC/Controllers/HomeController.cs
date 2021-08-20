@@ -1,50 +1,59 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using NSE.WebApp.MVC.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NSE.WebApp.MVC.Models;
 
 namespace NSE.WebApp.MVC.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : MainController
     {
-        public IActionResult Index()
+        [Route("sistema-indisponivel")]
+        public IActionResult SistemaIndisponivel()
         {
-            return View();
+            var modelErro = new ErrorViewModel
+            {
+                Mensagem = "O sistema está temporariamente indisponível, isto pode ocorrer em momentos de sobrecarga de usuários.",
+                Titulo = "Sistema indisponível.",
+                ErroCode = 500
+            };
+
+            return View("Error", modelErro);
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
-        [Route("erro/{id:length(3,3)")]
-        public IActionResult Error(int codigo)
+        [Route("erro/{id:length(3,3)}")]
+        public IActionResult Error(int id)
         {
             var modelErro = new ErrorViewModel();
-            switch (codigo)
+
+            if (id == 500)
             {
-                case 500:
-                    modelErro.Mensagem = "Tente novamente mais tarde ou contate nosso suporte";
-                    modelErro.Titulo = "Ocorreu um erro!";
-                    modelErro.ErroCode = codigo;
-                    break;
-                case 404:
-                    modelErro.Mensagem = "A página que está procurando não existe@ <br/>Em caso de dúvidas entre em contato com nosso suporte";
-                    modelErro.Titulo = "Ops! Página não encontrada";
-                    modelErro.ErroCode = codigo;
-                    break;
-                case 403:
-                    modelErro.Mensagem = "Você não tem permissão para fazer isto";
-                    modelErro.Titulo = "Acesso negado!";
-                    modelErro.ErroCode = codigo;
-                    break;
-                default:
-                    return StatusCode(404);
+                modelErro.Mensagem = "Ocorreu um erro! Tente novamente mais tarde ou contate nosso suporte.";
+                modelErro.Titulo = "Ocorreu um erro!";
+                modelErro.ErroCode = id;
             }
+            else if (id == 404)
+            {
+                modelErro.Mensagem =
+                    "A página que está procurando não existe! <br />Em caso de dúvidas entre em contato com nosso suporte";
+                modelErro.Titulo = "Ops! Página não encontrada.";
+                modelErro.ErroCode = id;
+            }
+            else if (id == 403)
+            {
+                modelErro.Mensagem = "Você não tem permissão para fazer isto.";
+                modelErro.Titulo = "Acesso Negado";
+                modelErro.ErroCode = id;
+            }
+            else
+            {
+                return StatusCode(404);
+            }
+
             return View("Error", modelErro);
         }
     }
