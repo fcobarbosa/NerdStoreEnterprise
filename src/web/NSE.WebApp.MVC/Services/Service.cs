@@ -8,6 +8,13 @@ namespace NSE.WebApp.MVC.Services
 {
     public abstract class Service
     {
+        protected readonly HttpClient _httpClient;
+
+        public Service(HttpClient httpClient)
+        {
+            this._httpClient = httpClient;
+        }
+
         protected StringContent ObterConteudo(object dado)
         {
             return new StringContent(

@@ -12,6 +12,8 @@ namespace NSE.Catalogo.API.Controllers
 
     [ApiController]
     [Authorize]
+    [Route("")]
+    [Route("Vitrine")]
     public class CatalogoController : Controller
     {
         private readonly IProdutoRepository _produtoRepository;

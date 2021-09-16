@@ -13,19 +13,19 @@ namespace NSE.WebApp.MVC.Services.Handlers
 
         public HttpClientAuthorizationDelegatingHandler(IUser user)
         {
-            _user = user;
+            this._user = user;
         }
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var authorizationHeader = _user.ObterHttpContext().Request.Headers["Authorization"];
+            var authorizationHeader = this._user.ObterHttpContext().Request.Headers["Authorization"];
 
             if (!string.IsNullOrEmpty(authorizationHeader))
             {
                 request.Headers.Add("Authorization", new List<string>() { authorizationHeader });
             }
 
-            var token = _user.ObterUserToken();
+            var token = this._user.ObterUserToken();
 
             if (token != null)
             {

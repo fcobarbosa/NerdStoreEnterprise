@@ -9,21 +9,16 @@ namespace NSE.WebApp.MVC.Services
 {
     public class AutenticacaoService : Service, IAutenticacaoService
     {
-        private readonly HttpClient _httpClient;
-
-        public AutenticacaoService(HttpClient httpClient, 
-                                   IOptions<AppSettings> settings)
+        public AutenticacaoService(HttpClient httpClient, IOptions<AppSettings> settings) : base(httpClient)
         {
             httpClient.BaseAddress = new Uri(settings.Value.AutenticacaoUrl);
-
-            _httpClient = httpClient;
         }
 
         public async Task<UsuarioRespostaLogin> Login(UsuarioLogin usuarioLogin)
         {
             var loginContent = ObterConteudo(usuarioLogin);
 
-            var response = await _httpClient.PostAsync("/api/identidade/autenticar", loginContent);
+            var response = await this._httpClient.PostAsync("/api/identidade/autenticar", loginContent);
 
             if (!TratarErrosResponse(response))
             {
