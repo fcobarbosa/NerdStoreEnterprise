@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NSE.Cliente.API
+namespace NSE.Clientes.API
 {
     public class Startup
     {
