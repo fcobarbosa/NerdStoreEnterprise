@@ -9,10 +9,10 @@ namespace NSE.Clientes.API.Application.Commands
 {
     public class RegistrarClienteCommand : Command
     {
-        public Guid Id { get; set; }
-        public string Nome { get; set; }
-        public string Email { get; set; }
-        public string Cpf { get; set; }
+        public Guid Id { get; private set; }
+        public string Nome { get; private set; }
+        public string Email { get; private set; }
+        public string Cpf { get; private set; }
 
         public RegistrarClienteCommand(Guid id, string nome, string email, string cpf)
         {
