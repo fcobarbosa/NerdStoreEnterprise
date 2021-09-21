@@ -1,7 +1,9 @@
 ﻿using FluentValidation.Results;
+using NSE.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NSE.Core.Messages
 {
@@ -20,6 +22,12 @@ namespace NSE.Core.Messages
         protected void AddError(string propertyName, string message)
         {
             this.ValidationResult.Errors.Add(new ValidationFailure(propertyName, message));
+        }
+
+        protected async Task<ValidationResult> PersistData(IUnitOfWork uow)
+        {
+            if (!await uow.Commit()) AddError("Houve um erro ao persistir os dados");
+            return ValidationResult;
         }
     }
 }
