@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:59838",
-      "sslPort": 44390
+      "applicationUrl": "http://localhost:52634",
+      "sslPort": 44317
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
@@ -20,18 +20,11 @@
     "NSE.Cliente.API": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5001;http://localhost:5000"
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
-      "publishAllPorts": true,
-      "useSSL": true
+      "applicationUrl": "https://localhost:44317;http://localhost:44316"
     }
   }
 }
