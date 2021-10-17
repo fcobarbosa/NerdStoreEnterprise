@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using EasyNetQ;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using NSE.Core.Messages.Integration;
 using NSE.Identidade.API.Models;
 using NSE.WebAPI.Core.Controllers;
 using NSE.WebAPI.Core.Identidade;
@@ -21,6 +23,7 @@ namespace NSE.Identidade.API.Controllers
         public readonly SignInManager<IdentityUser> _signInManager;
         public readonly UserManager<IdentityUser> _userManager;
         public readonly AppSettings _appSettings;
+        private IBus _bus;
 
         public AuthController(SignInManager<IdentityUser> signInManager,
                               UserManager<IdentityUser> userManager,
@@ -45,6 +48,7 @@ namespace NSE.Identidade.API.Controllers
             var result = await this._userManager.CreateAsync(user, usuarioRegistro.Senha);
             if (result.Succeeded)
             {
+                var sucesso = await RegistrarCliente(usuarioRegistro);
                 return CustomResponse(await GerarJwt(usuarioRegistro.Email));
             }
 
@@ -72,7 +76,15 @@ namespace NSE.Identidade.API.Controllers
             AddProcessingError("Usuário e/ou senha incorretos");
             return CustomResponse();
         }
-
+        public async Task<ResponseMessage> RegistrarCliente(UsuarioRegistro usuarioRegistro)
+        {
+            var usuario = await _userManager.FindByEmailAsync(usuarioRegistro.Email);
+            var usuarioRegistrado = new UsuarioRegistradoIntegrationEvent(
+                Guid.Parse(usuario.Id), usuarioRegistro.Nome, usuarioRegistro.Email, usuarioRegistro.Cpf);
+            this._bus = RabbitHutch.CreateBus(connectionString: "host=192.168.99.100:5672");
+            var sucesso = await this._bus.Rpc.RequestAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(usuarioRegistrado);
+            return sucesso;
+        }
         private async Task<UsuarioRespostaLogin> GerarJwt(string email)
         {
             var user = await this._userManager.FindByEmailAsync(email);
