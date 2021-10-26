@@ -35,7 +35,6 @@ namespace NSE.Identidade.API.Controllers
             this._appSettings = appSettings.Value;
             this._bus = bus;
         }
-
         [HttpPost("nova-conta")]
         public async Task<ActionResult> Registrar(UsuarioRegistro usuarioRegistro)
         {
@@ -65,7 +64,6 @@ namespace NSE.Identidade.API.Controllers
             }
             return CustomResponse();
         }
-
         [HttpPost("autenticar")]
         public async Task<ActionResult> Login(UsuarioLogin usuarioLogin)
         {
@@ -91,7 +89,6 @@ namespace NSE.Identidade.API.Controllers
             var encodedToken = CodificarToken(identityClaims);
             return ObterRespostaToken(encodedToken, user, claims);
         }
-
         private async Task<ClaimsIdentity> ObterClaimsUsuario(ICollection<Claim> claims, IdentityUser user)
         {
             var userRoles = await this._userManager.GetRolesAsync(user);
@@ -140,10 +137,10 @@ namespace NSE.Identidade.API.Controllers
                 }
             };
         }
-        public static long ToUnixEpochDate(DateTime date)
+        private static long ToUnixEpochDate(DateTime date)
             => (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
 
-        public async Task<ResponseMessage> RegistrarCliente(UsuarioRegistro usuarioRegistro)
+        private async Task<ResponseMessage> RegistrarCliente(UsuarioRegistro usuarioRegistro)
         {
             var user = await _userManager.FindByEmailAsync(usuarioRegistro.Email);
             var userRegistred = new UsuarioRegistradoIntegrationEvent(

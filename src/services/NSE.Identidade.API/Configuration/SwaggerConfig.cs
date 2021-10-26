@@ -28,7 +28,7 @@ namespace NSE.Identidade.API.Configuration
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "v1");
+                c.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "Identidade API v1.0");
             });
             return app;
         }

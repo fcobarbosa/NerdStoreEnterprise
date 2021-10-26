@@ -53,7 +53,7 @@ namespace NSE.Catalogo.API.Configuration
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "v1");
+                c.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "Catálogo API v1.0");
             });
             return app;
         }

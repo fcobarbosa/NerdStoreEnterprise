@@ -20,5 +20,14 @@ namespace NSE.WebApp.MVC.Controllers
 
             return false;
         }
+        protected bool IsValidOperation()
+        {
+            return ModelState.ErrorCount == 0; ;
+        }
+
+        protected void AddProcessingError(string erro)
+        {
+            ModelState.AddModelError(key: string.Empty, erro);
+        }
     }
 }
